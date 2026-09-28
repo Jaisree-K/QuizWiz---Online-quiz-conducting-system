@@ -1,0 +1,3039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizWiz – Simple Online Quiz Conducting System</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --primary-light: #eef2ff;
+            --secondary: #06b6d4;
+            --dark: #0f172a;
+            --dark-surface: #1e293b;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --success: #10b981;
+            --success-light: #ecfdf5;
+            --warning: #f59e0b;
+            --warning-light: #fffbeb;
+            --danger: #ef4444;
+            --danger-light: #fef2f2;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 18px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--gray-50);
+            color: var(--gray-800);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* NAVIGATION BAR */
+        .navbar {
+            background: #ffffff;
+            border-bottom: 1px solid var(--gray-200);
+            padding: 0.85rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .brand-icon {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+        }
+
+        .brand-title {
+            font-weight: 800;
+            font-size: 1.4rem;
+            letter-spacing: -0.5px;
+            color: var(--dark);
+        }
+
+        .brand-title span {
+            color: var(--primary);
+        }
+
+        .brand-subtitle {
+            font-size: 0.7rem;
+            color: var(--gray-500);
+            font-weight: 500;
+            display: block;
+            margin-top: -3px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            list-style: none;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: none;
+            padding: 0.6rem 1.1rem;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            color: var(--gray-600);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.92rem;
+        }
+
+        .nav-btn:hover {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .nav-btn.active {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .nav-profile-badge {
+            background: var(--gray-100);
+            border: 1px solid var(--gray-200);
+            padding: 0.4rem 0.9rem;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .nav-profile-badge:hover {
+            background: var(--gray-200);
+        }
+
+        .profile-avatar {
+            width: 26px;
+            height: 26px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        /* CONTAINER & LAYOUT */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            width: 100%;
+            flex: 1;
+        }
+
+        .view-section {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* HERO SECTION */
+        .hero-banner {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #4338ca 100%);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 3.5rem 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 2.5rem;
+        }
+
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 250px;
+            height: 250px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+        }
+
+        .hero-banner::after {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            left: -80px;
+            width: 300px;
+            height: 300px;
+            background: rgba(6, 182, 212, 0.12);
+            border-radius: 50%;
+        }
+
+        .hero-title {
+            font-size: 2.6rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.15rem;
+            opacity: 0.9;
+            max-width: 650px;
+            margin: 0 auto 2rem;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 1.6rem;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #ffffff;
+            color: var(--dark);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-100);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-outline:hover {
+            border-color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 0.45rem 0.9rem;
+            font-size: 0.82rem;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* STATS GRID */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            border: 1px solid var(--gray-200);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+
+        .stat-blue { background: var(--primary-light); color: var(--primary); }
+        .stat-green { background: var(--success-light); color: var(--success); }
+        .stat-amber { background: var(--warning-light); color: var(--warning); }
+        .stat-cyan { background: #ecfeff; color: var(--secondary); }
+
+        .stat-value {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--dark);
+            line-height: 1.1;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+            font-weight: 600;
+            margin-top: 0.25rem;
+        }
+
+        /* FEATURE CARDS */
+        .section-header {
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .feature-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            padding: 1.75rem;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary);
+        }
+
+        .feature-icon-wrapper {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-sm);
+            background: var(--primary-light);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .feature-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .feature-desc {
+            font-size: 0.9rem;
+            color: var(--gray-600);
+            line-height: 1.5;
+        }
+
+        /* HOW IT WORKS */
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            position: relative;
+            margin-bottom: 3rem;
+        }
+
+        .step-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            width: 36px;
+            height: 36px;
+            background: var(--primary);
+            color: white;
+            font-weight: 800;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+        }
+
+        .step-title {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--dark);
+            margin-bottom: 0.4rem;
+        }
+
+        .step-desc {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+        }
+
+        /* PROFILE SECTION BAR */
+        .profile-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .profile-info {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .profile-badge-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .profile-name {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .profile-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: var(--gray-500);
+            margin-top: 0.2rem;
+        }
+
+        .profile-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        /* QUIZ CARDS */
+        .quiz-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .quiz-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            padding: 1.75rem;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: var(--transition);
+        }
+
+        .quiz-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary);
+        }
+
+        .quiz-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 0.85rem;
+        }
+
+        .quiz-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--dark);
+            line-height: 1.3;
+        }
+
+        .category-badge {
+            background: var(--primary-light);
+            color: var(--primary);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.3rem 0.7rem;
+            border-radius: 9999px;
+            white-space: nowrap;
+        }
+
+        .quiz-desc {
+            font-size: 0.9rem;
+            color: var(--gray-600);
+            margin-bottom: 1.25rem;
+            line-height: 1.5;
+            flex: 1;
+        }
+
+        .quiz-meta-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.85rem 0;
+            border-top: 1px solid var(--gray-100);
+            border-bottom: 1px solid var(--gray-100);
+            margin-bottom: 1.25rem;
+            font-size: 0.85rem;
+            color: var(--gray-600);
+            font-weight: 600;
+        }
+
+        .quiz-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .badge-attempted {
+            background: var(--gray-100);
+            color: var(--gray-500);
+            border: 1px solid var(--gray-300);
+            cursor: not-allowed;
+            font-weight: 700;
+        }
+
+        /* EMPTY STATE */
+        .empty-state {
+            background: white;
+            border: 2px dashed var(--gray-300);
+            border-radius: var(--radius-md);
+            padding: 3.5rem 2rem;
+            text-align: center;
+            color: var(--gray-500);
+            margin: 2rem 0;
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            color: var(--gray-300);
+            margin-bottom: 1rem;
+        }
+
+        .empty-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--gray-700);
+            margin-bottom: 0.4rem;
+        }
+
+        /* EXAM / ATTEMPT INTERFACE */
+        .exam-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .exam-header {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            padding: 1.25rem 1.75rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .exam-title-box h2 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .timer-display {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--gray-100);
+            border: 1px solid var(--gray-300);
+            padding: 0.5rem 1.2rem;
+            border-radius: 9999px;
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: var(--gray-800);
+            transition: var(--transition);
+        }
+
+        .timer-warning {
+            background: var(--warning-light);
+            border-color: var(--warning);
+            color: #b45309;
+        }
+
+        .timer-critical {
+            background: var(--danger-light);
+            border-color: var(--danger);
+            color: var(--danger);
+            animation: pulseTimer 1s infinite;
+        }
+
+        @keyframes pulseTimer {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background: var(--gray-200);
+            border-radius: 9999px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .exam-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            padding: 2.25rem;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 1.5rem;
+        }
+
+        .question-number-tag {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--dark);
+            line-height: 1.4;
+            margin-bottom: 2rem;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .option-item {
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            padding: 1.1rem 1.4rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: white;
+        }
+
+        .option-item:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .option-item.selected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            box-shadow: 0 0 0 1px var(--primary);
+        }
+
+        .option-marker {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid var(--gray-300);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.9rem;
+            color: var(--gray-600);
+            flex-shrink: 0;
+            transition: var(--transition);
+        }
+
+        .option-item.selected .option-marker {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .option-label {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--gray-800);
+            flex: 1;
+        }
+
+        .exam-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .palette-container {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            padding: 1.25rem 1.5rem;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 1.5rem;
+        }
+
+        .palette-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--gray-500);
+            margin-bottom: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        .palette-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .palette-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--gray-300);
+            background: white;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .palette-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .palette-btn.current {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+            box-shadow: 0 0 0 2px var(--primary);
+        }
+
+        .palette-btn.answered {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        .palette-btn.current.answered {
+            box-shadow: 0 0 0 2px var(--dark);
+        }
+
+        /* RESULT SCREEN */
+        .result-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+            max-width: 680px;
+            margin: 2rem auto;
+        }
+
+        .result-badge {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--success-light);
+            color: var(--success);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto 1.5rem;
+        }
+
+        .result-score {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--dark);
+            letter-spacing: -1px;
+            line-height: 1.1;
+        }
+
+        .result-pct {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 2rem;
+        }
+
+        .result-stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .res-stat {
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+        }
+
+        .res-stat.correct { background: var(--success-light); color: var(--success); }
+        .res-stat.incorrect { background: var(--danger-light); color: var(--danger); }
+        .res-stat.unanswered { background: var(--gray-100); color: var(--gray-600); }
+
+        .res-stat-num {
+            font-size: 1.6rem;
+            font-weight: 800;
+            display: block;
+        }
+
+        .res-stat-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        /* REVIEW SCREEN */
+        .review-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            padding: 1.75rem;
+            margin-bottom: 1.25rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .status-pill {
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 0.25rem 0.8rem;
+            border-radius: 9999px;
+            text-transform: uppercase;
+        }
+
+        .status-pill.correct { background: var(--success-light); color: var(--success); }
+        .status-pill.incorrect { background: var(--danger-light); color: var(--danger); }
+        .status-pill.unanswered { background: var(--gray-200); color: var(--gray-600); }
+
+        .review-option {
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-sm);
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+        }
+
+        .review-option.is-correct-target {
+            background: var(--success-light);
+            border-color: var(--success);
+            font-weight: 600;
+        }
+
+        .review-option.is-user-selected-wrong {
+            background: var(--danger-light);
+            border-color: var(--danger);
+            font-weight: 600;
+        }
+
+        /* TABLES */
+        .data-table-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.92rem;
+        }
+
+        th {
+            background: var(--gray-100);
+            color: var(--gray-700);
+            font-weight: 700;
+            padding: 0.9rem 1.2rem;
+            border-bottom: 1px solid var(--gray-200);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 0.9rem 1.2rem;
+            border-bottom: 1px solid var(--gray-100);
+            color: var(--gray-700);
+            vertical-align: middle;
+        }
+
+        tr:hover td {
+            background-color: var(--gray-50);
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-box {
+            background: white;
+            border-radius: var(--radius-lg);
+            width: 90%;
+            max-width: 580px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            transform: scale(0.95);
+            transition: var(--transition);
+        }
+
+        .modal-overlay.active .modal-box {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: var(--gray-500);
+            cursor: pointer;
+        }
+
+        /* FORMS */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--gray-700);
+            margin-bottom: 0.4rem;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            color: var(--dark);
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+        }
+
+        /* TOAST */
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .toast {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 1rem 1.4rem;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.92rem;
+            font-weight: 600;
+            min-width: 300px;
+            max-width: 450px;
+            animation: slideInRight 0.3s ease;
+            border-left: 4px solid var(--primary);
+        }
+
+        .toast-success { border-left-color: var(--success); }
+        .toast-error { border-left-color: var(--danger); }
+        .toast-warning { border-left-color: var(--warning); }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* FOOTER */
+        footer {
+            background: white;
+            border-top: 1px solid var(--gray-200);
+            padding: 1.5rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--gray-500);
+            margin-top: auto;
+        }
+
+        /* TABS */
+        .tabs-header {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--gray-200);
+            margin-bottom: 1.75rem;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 0.75rem 1.25rem;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--gray-500);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .navbar { padding: 0.75rem 1rem; }
+            .hero-banner { padding: 2.5rem 1.5rem; }
+            .hero-title { font-size: 2rem; }
+            .exam-header { flex-direction: column; align-items: stretch; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="nav-brand" onclick="switchView('home')">
+            <div class="brand-icon">
+                <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <div>
+                <span class="brand-title">QUIZ<span>WIZ</span></span>
+                <span class="brand-subtitle">Simple Online Quiz Conducting System</span>
+            </div>
+        </div>
+
+        <ul class="nav-links">
+            <li><button class="nav-btn active" id="nav-home" onclick="switchView('home')"><i class="fa-solid fa-house"></i> Home</button></li>
+            <li><button class="nav-btn" id="nav-quizzes" onclick="switchView('quizzes')"><i class="fa-solid fa-layer-group"></i> Quizzes</button></li>
+            <li><button class="nav-btn" id="nav-about" onclick="switchView('about')"><i class="fa-solid fa-circle-info"></i> About</button></li>
+            <li><button class="nav-btn" id="nav-admin" onclick="switchView('admin')"><i class="fa-solid fa-shield-halved"></i> Admin</button></li>
+            <li>
+                <div class="nav-profile-badge" id="nav-user-badge" onclick="openProfileModal()">
+                    <div class="profile-avatar" id="nav-user-initial">?</div>
+                    <span id="nav-user-name">Set Profile</span>
+                </div>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- MAIN CONTAINER -->
+    <main class="container">
+
+        <!-- ================= HOME VIEW ================= -->
+        <section id="view-home" class="view-section active">
+            <div class="hero-banner">
+                <h1 class="hero-title">Smart Online Quiz Platform</h1>
+                <p class="hero-subtitle">Create, conduct and evaluate quizzes effortlessly with instant scoring, strict timing, and student analytics.</p>
+                <div class="hero-cta">
+                    <button class="btn btn-secondary" onclick="switchView('quizzes')"><i class="fa-solid fa-play"></i> Take a Quiz</button>
+                    <button class="btn btn-outline" onclick="switchView('admin')"><i class="fa-solid fa-gauge-high"></i> Admin Dashboard</button>
+                </div>
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon stat-blue"><i class="fa-solid fa-book-open"></i></div>
+                    <div>
+                        <div class="stat-value" id="home-total-quizzes">0</div>
+                        <div class="stat-label">Available Quizzes</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon stat-cyan"><i class="fa-solid fa-circle-question"></i></div>
+                    <div>
+                        <div class="stat-value" id="home-total-questions">0</div>
+                        <div class="stat-label">Total Questions</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon stat-green"><i class="fa-solid fa-users"></i></div>
+                    <div>
+                        <div class="stat-value" id="home-total-students">0</div>
+                        <div class="stat-label">Registered Students</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon stat-amber"><i class="fa-solid fa-trophy"></i></div>
+                    <div>
+                        <div class="stat-value" id="home-total-attempts">0</div>
+                        <div class="stat-label">Quizzes Completed</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature Cards -->
+            <div class="section-header">
+                <h2 class="section-title"><i class="fa-solid fa-bolt text-primary"></i> Key Features</h2>
+            </div>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper"><i class="fa-solid fa-file-circle-plus"></i></div>
+                    <h3 class="feature-title">1. Create Quizzes</h3>
+                    <p class="feature-desc">Faculty can easily draft quizzes, assign categories, manage 4-choice MCQs, and configure custom time limits.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper"><i class="fa-solid fa-stopwatch"></i></div>
+                    <h3 class="feature-title">2. Timed Assessments</h3>
+                    <p class="feature-desc">Real-time synchronized countdown timers with automatic backend auto-submission when duration expires.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper"><i class="fa-solid fa-chart-pie"></i></div>
+                    <h3 class="feature-title">3. Instant Scoring</h3>
+                    <p class="feature-desc">Automated, tamper-proof score evaluation. Students get instant marks, breakdown, and question-by-question review.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper"><i class="fa-solid fa-chart-line"></i></div>
+                    <h3 class="feature-title">4. Detailed Reports</h3>
+                    <p class="feature-desc">Comprehensive faculty dashboard with class-wise and student-wise analytics, search, filters, and score stats.</p>
+                </div>
+            </div>
+
+            <!-- How It Works -->
+            <div class="section-header">
+                <h2 class="section-title"><i class="fa-solid fa-arrows-spin"></i> How It Works</h2>
+            </div>
+            <div class="process-steps">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h4 class="step-title">Faculty creates quiz</h4>
+                    <p class="step-desc">Add MCQs, set the right answer option, and set the duration.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h4 class="step-title">Student attempts quiz</h4>
+                    <p class="step-desc">Enter details and solve questions within the allocated time window.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h4 class="step-title">System evaluates answers</h4>
+                    <p class="step-desc">Answers are graded strictly according to the scoring engine.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h4 class="step-title">Instant feedback</h4>
+                    <p class="step-desc">Immediate score report, percentage, and detailed answer review.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= QUIZZES / STUDENT VIEW ================= -->
+        <section id="view-quizzes" class="view-section">
+            <!-- Student Profile Bar -->
+            <div class="profile-card">
+                <div class="profile-info">
+                    <div class="profile-badge-icon" id="student-badge-initial">S</div>
+                    <div>
+                        <div class="profile-name" id="student-display-name">Guest Student</div>
+                        <div class="profile-meta">
+                            <span id="student-display-email"><i class="fa-regular fa-envelope"></i> guest@college.edu</span>
+                            <span id="student-display-class"><i class="fa-solid fa-graduation-cap"></i> General Class</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="openProfileModal()">
+                    <i class="fa-solid fa-user-pen"></i> Save / Use Profile
+                </button>
+            </div>
+
+            <!-- Student Dashboard Statistics -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon stat-blue"><i class="fa-solid fa-layer-group"></i></div>
+                    <div>
+                        <div class="stat-value" id="student-stat-available">0</div>
+                        <div class="stat-label">Available Quizzes</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon stat-green"><i class="fa-solid fa-check-double"></i></div>
+                    <div>
+                        <div class="stat-value" id="student-stat-completed">0</div>
+                        <div class="stat-label">Completed Quizzes</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon stat-cyan"><i class="fa-solid fa-percent"></i></div>
+                    <div>
+                        <div class="stat-value" id="student-stat-avg">0%</div>
+                        <div class="stat-label">Average Score</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon stat-amber"><i class="fa-solid fa-receipt"></i></div>
+                    <div>
+                        <div class="stat-value" id="student-stat-total-attempts">0</div>
+                        <div class="stat-label">Total Attempts</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Available Quizzes Section -->
+            <div class="section-header">
+                <h2 class="section-title"><i class="fa-solid fa-list-check"></i> Available Quizzes</h2>
+            </div>
+            
+            <div id="quizzes-list-container" class="quiz-grid">
+                <!-- Dynamically loaded -->
+            </div>
+
+            <!-- Student's Previous Attempts -->
+            <div class="section-header" style="margin-top: 3rem;">
+                <h2 class="section-title"><i class="fa-solid fa-clock-rotate-left"></i> My Quiz Attempts</h2>
+            </div>
+            <div class="data-table-card">
+                <div class="table-responsive">
+                    <table id="student-attempts-table">
+                        <thead>
+                            <tr>
+                                <th>Quiz Title</th>
+                                <th>Score</th>
+                                <th>Percentage</th>
+                                <th>Date & Time</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="student-attempts-tbody">
+                            <tr>
+                                <td colspan="6" style="text-align:center; padding: 2rem;">No attempts found for this student.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= EXAM / ATTEMPT VIEW ================= -->
+        <section id="view-exam" class="view-section">
+            <div class="exam-container">
+                <!-- Exam Header with Timer -->
+                <div class="exam-header">
+                    <div class="exam-title-box">
+                        <span class="question-number-tag" id="exam-category">General</span>
+                        <h2 id="exam-quiz-title">Quiz Title</h2>
+                    </div>
+                    <div class="timer-display" id="exam-timer">
+                        <i class="fa-regular fa-clock"></i> <span id="exam-timer-text">10:00</span>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill" id="exam-progress-bar"></div>
+                </div>
+
+                <!-- Question Palette -->
+                <div class="palette-container">
+                    <div class="palette-title">Question Palette</div>
+                    <div class="palette-grid" id="exam-palette">
+                        <!-- 1 2 3 ... -->
+                    </div>
+                </div>
+
+                <!-- Active Question Card -->
+                <div class="exam-card">
+                    <div class="question-number-tag" id="exam-question-counter">Question 1 of 10</div>
+                    <div class="question-text" id="exam-question-text">Loading question text...</div>
+
+                    <div class="options-list" id="exam-options-list">
+                        <!-- Options A, B, C, D -->
+                    </div>
+
+                    <div class="exam-controls">
+                        <button class="btn btn-secondary" id="btn-prev-question" onclick="prevQuestion()">
+                            <i class="fa-solid fa-arrow-left"></i> Previous
+                        </button>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="btn btn-outline" style="color: var(--gray-600); border-color: var(--gray-300);" onclick="clearCurrentSelection()">
+                                Clear Choice
+                            </button>
+                            <button class="btn btn-secondary" id="btn-next-question" onclick="nextQuestion()">
+                                Next <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                        <button class="btn btn-success" onclick="confirmSubmitQuiz()">
+                            <i class="fa-solid fa-paper-plane"></i> Submit Quiz
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= RESULT VIEW ================= -->
+        <section id="view-result" class="view-section">
+            <div class="result-card">
+                <div class="result-badge" id="result-badge-icon">
+                    <i class="fa-solid fa-award"></i>
+                </div>
+                <h1 style="font-size: 2rem; font-weight: 800; color: var(--dark); margin-bottom: 0.5rem;" id="result-heading">
+                    QUIZ COMPLETED!
+                </h1>
+                <p style="color: var(--gray-500); font-weight: 600; margin-bottom: 1.5rem;" id="result-status-msg">
+                    Submitted Successfully
+                </p>
+
+                <div class="result-score" id="result-score-text">7 / 10</div>
+                <div class="result-pct" id="result-pct-text">Score: 70%</div>
+
+                <div class="result-stats-row">
+                    <div class="res-stat correct">
+                        <span class="res-stat-num" id="res-stat-correct">7</span>
+                        <span class="res-stat-label">Correct</span>
+                    </div>
+                    <div class="res-stat incorrect">
+                        <span class="res-stat-num" id="res-stat-incorrect">2</span>
+                        <span class="res-stat-label">Incorrect</span>
+                    </div>
+                    <div class="res-stat unanswered">
+                        <span class="res-stat-num" id="res-stat-unanswered">1</span>
+                        <span class="res-stat-label">Unanswered</span>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="openAnswerReview()">
+                        <i class="fa-solid fa-magnifying-glass"></i> VIEW ANSWERS
+                    </button>
+                    <button class="btn btn-secondary" onclick="switchView('quizzes')">
+                        <i class="fa-solid fa-table-columns"></i> BACK TO DASHBOARD
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= ANSWER REVIEW VIEW ================= -->
+        <section id="view-review" class="view-section">
+            <div style="max-width: 850px; margin: 0 auto;">
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title"><i class="fa-solid fa-clipboard-check"></i> Answer Review</h2>
+                        <p style="color: var(--gray-500); font-size: 0.9rem;" id="review-quiz-subtitle">Detailed answer comparison</p>
+                    </div>
+                    <button class="btn btn-secondary" onclick="switchView('quizzes')">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+                    </button>
+                </div>
+
+                <div id="review-questions-list">
+                    <!-- Cards for each question -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= ADMIN DASHBOARD VIEW ================= -->
+        <section id="view-admin" class="view-section">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title"><i class="fa-solid fa-shield-halved"></i> Faculty / Admin Portal</h2>
+                    <p style="color: var(--gray-500); font-size: 0.9rem;">Manage quizzes, questions, student data, and performance reports</p>
+                </div>
+                <div style="display: flex; gap: 0.75rem;">
+                    <button class="btn btn-primary" onclick="openCreateQuizModal()">
+                        <i class="fa-solid fa-plus"></i> CREATE QUIZ
+                    </button>
+                    <button class="btn btn-secondary" onclick="openAddQuestionModal()">
+                        <i class="fa-solid fa-circle-question"></i> ADD QUESTION
+                    </button>
+                </div>
+            </div>
+
+            <!-- Admin Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon stat-blue"><i class="fa-solid fa-book"></i></div>
+                    <div>
+                        <div class="stat-value" id="admin-stat-quizzes">0</div>
+                        <div class="stat-label">Total Quizzes</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon stat-cyan"><i class="fa-solid fa-list-ol"></i></div>
+                    <div>
+                        <div class="stat-value" id="admin-stat-questions">0</div>
+                        <div class="stat-label">Total Questions</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon stat-green"><i class="fa-solid fa-user-graduate"></i></div>
+                    <div>
+                        <div class="stat-value" id="admin-stat-students">0</div>
+                        <div class="stat-label">Total Students</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon stat-amber"><i class="fa-solid fa-chart-column"></i></div>
+                    <div>
+                        <div class="stat-value" id="admin-stat-attempts">0</div>
+                        <div class="stat-label">Total Attempts</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Sub-tabs -->
+            <div class="tabs-header">
+                <button class="tab-btn active" onclick="switchAdminTab('quizzes')"><i class="fa-solid fa-layer-group"></i> Quizzes</button>
+                <button class="tab-btn" onclick="switchAdminTab('questions')"><i class="fa-solid fa-circle-question"></i> Questions</button>
+                <button class="tab-btn" onclick="switchAdminTab('students')"><i class="fa-solid fa-users"></i> Students</button>
+                <button class="tab-btn" onclick="switchAdminTab('reports')"><i class="fa-solid fa-file-invoice"></i> Reports</button>
+            </div>
+
+            <!-- TAB 1: Quizzes -->
+            <div id="admin-tab-quizzes">
+                <div class="data-table-card">
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Title</th>
+                                    <th>Category</th>
+                                    <th>Questions</th>
+                                    <th>Duration</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-quizzes-tbody">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: Questions -->
+            <div id="admin-tab-questions" style="display: none;">
+                <div style="margin-bottom: 1rem; display: flex; gap: 1rem; align-items: center;">
+                    <label class="form-label" style="margin-bottom:0;">Filter by Quiz:</label>
+                    <select class="form-select" style="max-width: 300px;" id="admin-filter-quiz" onchange="loadAdminQuestions()">
+                        <option value="">All Quizzes</option>
+                    </select>
+                </div>
+                <div class="data-table-card">
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Question</th>
+                                    <th>Options (A / B / C / D)</th>
+                                    <th>Correct</th>
+                                    <th>Quiz</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-questions-tbody">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: Students -->
+            <div id="admin-tab-students" style="display: none;">
+                <div class="data-table-card">
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Class / Branch</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-students-tbody">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: Reports -->
+            <div id="admin-tab-reports" style="display: none;">
+                <!-- Reports Summary Cards -->
+                <div class="stats-grid" style="margin-bottom: 1.5rem;">
+                    <div class="stat-card">
+                        <div class="stat-icon stat-blue"><i class="fa-solid fa-list-check"></i></div>
+                        <div>
+                            <div class="stat-value" id="rep-total-attempts">0</div>
+                            <div class="stat-label">Total Attempts</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon stat-cyan"><i class="fa-solid fa-calculator"></i></div>
+                        <div>
+                            <div class="stat-value" id="rep-avg-score">0</div>
+                            <div class="stat-label">Average Score</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon stat-green"><i class="fa-solid fa-crown"></i></div>
+                        <div>
+                            <div class="stat-value" id="rep-high-score">0</div>
+                            <div class="stat-label">Highest Score</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon stat-amber"><i class="fa-solid fa-arrow-down-short-wide"></i></div>
+                        <div>
+                            <div class="stat-value" id="rep-low-score">0</div>
+                            <div class="stat-label">Lowest Score</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search & Filters -->
+                <div style="display: flex; gap: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap;">
+                    <input type="text" class="form-input" id="reports-search" placeholder="Search by student, email, or quiz..." style="max-width: 320px;" oninput="filterReportsTable()">
+                    <select class="form-select" id="reports-filter-category" style="max-width: 200px;" onchange="filterReportsTable()">
+                        <option value="">All Categories</option>
+                    </select>
+                    <select class="form-select" id="reports-filter-status" style="max-width: 200px;" onchange="filterReportsTable()">
+                        <option value="">All Statuses</option>
+                        <option value="SUBMITTED">SUBMITTED</option>
+                        <option value="AUTO_SUBMITTED">AUTO_SUBMITTED</option>
+                    </select>
+                </div>
+
+                <div class="data-table-card">
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Email</th>
+                                    <th>Class</th>
+                                    <th>Quiz</th>
+                                    <th>Category</th>
+                                    <th>Score</th>
+                                    <th>Percentage</th>
+                                    <th>Attempt Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-reports-tbody">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= ABOUT VIEW ================= -->
+        <section id="view-about" class="view-section">
+            <div style="max-width: 800px; margin: 0 auto; background: white; border-radius: var(--radius-lg); padding: 3rem; border: 1px solid var(--gray-200); box-shadow: var(--shadow-sm);">
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <div class="brand-icon" style="margin: 0 auto 1rem; width: 60px; height: 60px; font-size: 2rem;">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--dark);">QuizWiz System</h1>
+                    <p style="color: var(--gray-500); font-weight: 600;">Simple Online Quiz Conducting System • Project Leap / Java + DBMS</p>
+                </div>
+
+                <div style="color: var(--gray-700); line-height: 1.8; font-size: 1rem;">
+                    <h3 style="color: var(--dark); margin-bottom: 0.5rem; font-weight: 700;">Problem Statement:</h3>
+                    <p style="margin-bottom: 1.5rem;">Faculty traditionally conduct short quizzes on paper, which requires manual correction, leads to late feedback for students, and consumes valuable class time. QuizWiz automates quiz creation, question bank administration, strict timer enforcement, immediate scoring, and student-wise analytics.</p>
+
+                    <h3 style="color: var(--dark); margin-bottom: 0.5rem; font-weight: 700;">Architecture & Stack:</h3>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1.5rem;">
+                        <li><strong>Backend:</strong> Java 17, Spring Boot (Spring Web, Spring Data JPA, Hibernate, Bean Validation)</li>
+                        <li><strong>Database:</strong> MySQL (Relational tables: <code>students</code>, <code>quizzes</code>, <code>questions</code>, <code>attempts</code>, <code>attempt_answers</code>)</li>
+                        <li><strong>Frontend:</strong> Single responsive HTML5 / Vanilla CSS / JavaScript interface directly served via Spring Boot</li>
+                        <li><strong>Business Logic Enforced:</strong> Duplicate attempt rejection, server-side timer validation, auto-submission, selective scoring for answered questions.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2026 QuizWiz – Simple Online Quiz Conducting System. Built with Spring Boot & MySQL.</p>
+    </footer>
+
+    <!-- ================= MODALS ================= -->
+
+    <!-- PROFILE MODAL -->
+    <div class="modal-overlay" id="modal-profile">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fa-solid fa-user-circle"></i> Student Profile</h3>
+                <button class="modal-close" onclick="closeModal('modal-profile')">&times;</button>
+            </div>
+            <form id="profile-form" onsubmit="handleSaveProfile(event)">
+                <div class="form-group">
+                    <label class="form-label">Full Name *</label>
+                    <input type="text" class="form-input" id="profile-input-name" placeholder="e.g. Jaisree" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email Address *</label>
+                    <input type="email" class="form-input" id="profile-input-email" placeholder="e.g. jaisree@gmail.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Class / Section *</label>
+                    <input type="text" class="form-input" id="profile-input-class" placeholder="e.g. III AIDS" required>
+                </div>
+                <div style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('modal-profile')">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Save / Use Profile</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- INSTRUCTIONS MODAL -->
+    <div class="modal-overlay" id="modal-instructions">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fa-solid fa-circle-info text-primary"></i> Quiz Instructions</h3>
+                <button class="modal-close" onclick="closeModal('modal-instructions')">&times;</button>
+            </div>
+            <div style="margin-bottom: 1.5rem;">
+                <h4 id="instr-quiz-title" style="font-size: 1.3rem; font-weight: 800; color: var(--dark); margin-bottom: 0.25rem;">Java Fundamentals</h4>
+                <div style="display: flex; gap: 1rem; color: var(--gray-500); font-size: 0.88rem; font-weight: 600; margin-bottom: 1.25rem;">
+                    <span id="instr-quiz-category"><i class="fa-solid fa-tag"></i> Programming</span>
+                    <span id="instr-quiz-questions"><i class="fa-solid fa-list-ol"></i> 10 Questions</span>
+                    <span id="instr-quiz-duration"><i class="fa-solid fa-clock"></i> 10 Minutes</span>
+                </div>
+
+                <div style="background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: var(--radius-sm); padding: 1.25rem; font-size: 0.92rem; line-height: 1.6; color: var(--gray-700);">
+                    <ul style="margin-left: 1.25rem;">
+                        <li>Each question has one correct answer.</li>
+                        <li><strong>Correct answer = 1 mark.</strong></li>
+                        <li><strong>Incorrect answer = 0 marks.</strong></li>
+                        <li><strong>Unanswered = 0 marks.</strong></li>
+                        <li>Quiz automatically submits when time expires.</li>
+                        <li><strong>Quiz can only be attempted once.</strong></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div style="background: var(--primary-light); padding: 0.85rem 1rem; border-radius: var(--radius-sm); font-size: 0.85rem; color: var(--primary); font-weight: 600; margin-bottom: 1.5rem;">
+                Attempting as: <span id="instr-student-info">Jaisree (jaisree@gmail.com)</span>
+            </div>
+
+            <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('modal-instructions')">Cancel</button>
+                <button type="button" class="btn btn-primary" id="btn-begin-quiz" onclick="startConfirmedAttempt()">
+                    <i class="fa-solid fa-play"></i> START QUIZ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUBMIT CONFIRMATION MODAL -->
+    <div class="modal-overlay" id="modal-confirm-submit">
+        <div class="modal-box" style="max-width: 460px; text-align: center;">
+            <div style="width: 60px; height: 60px; border-radius: 50%; background: var(--warning-light); color: var(--warning); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 1.25rem;">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 style="font-size: 1.35rem; font-weight: 800; color: var(--dark); margin-bottom: 0.5rem;">
+                Are you sure you want to submit?
+            </h3>
+            <p style="color: var(--gray-600); font-size: 0.95rem; margin-bottom: 1.5rem;" id="submit-summary-text">
+                You have answered 5 of 10 questions.
+            </p>
+            <div style="display: flex; gap: 0.75rem; justify-content: center;">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('modal-confirm-submit')">Review Answers</button>
+                <button type="button" class="btn btn-success" onclick="executeSubmit(false)">
+                    <i class="fa-solid fa-check"></i> Yes, Submit Quiz
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CREATE QUIZ MODAL -->
+    <div class="modal-overlay" id="modal-create-quiz">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 class="modal-title" id="quiz-modal-title"><i class="fa-solid fa-plus-circle"></i> Create New Quiz</h3>
+                <button class="modal-close" onclick="closeModal('modal-create-quiz')">&times;</button>
+            </div>
+            <form id="create-quiz-form" onsubmit="handleSaveQuiz(event)">
+                <input type="hidden" id="quiz-form-id">
+                <div class="form-group">
+                    <label class="form-label">Quiz Title *</label>
+                    <input type="text" class="form-input" id="quiz-input-title" placeholder="e.g. Java Fundamentals" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-textarea" id="quiz-input-desc" rows="2" placeholder="e.g. Basic Java programming quiz"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category *</label>
+                    <input type="text" class="form-input" id="quiz-input-category" placeholder="e.g. Programming" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Duration (Minutes) *</label>
+                    <input type="number" class="form-input" id="quiz-input-duration" min="1" max="180" value="10" required>
+                </div>
+                <div style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('modal-create-quiz')">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btn-save-quiz"><i class="fa-solid fa-floppy-disk"></i> SAVE QUIZ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ADD QUESTION MODAL -->
+    <div class="modal-overlay" id="modal-add-question">
+        <div class="modal-box" style="max-width: 640px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="question-modal-title"><i class="fa-solid fa-circle-question"></i> Add Question</h3>
+                <button class="modal-close" onclick="closeModal('modal-add-question')">&times;</button>
+            </div>
+            <form id="create-question-form" onsubmit="handleSaveQuestion(event)">
+                <input type="hidden" id="question-form-id">
+                <div class="form-group">
+                    <label class="form-label">Select Quiz *</label>
+                    <select class="form-select" id="question-select-quiz" required>
+                        <option value="">-- Choose Quiz --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Question Text *</label>
+                    <textarea class="form-textarea" id="question-input-text" rows="3" placeholder="e.g. Which keyword is used to inherit a class in Java?" required></textarea>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">Option A *</label>
+                        <input type="text" class="form-input" id="question-input-optA" placeholder="Option A" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Option B *</label>
+                        <input type="text" class="form-input" id="question-input-optB" placeholder="Option B" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Option C *</label>
+                        <input type="text" class="form-input" id="question-input-optC" placeholder="Option C" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Option D *</label>
+                        <input type="text" class="form-input" id="question-input-optD" placeholder="Option D" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Correct Option *</label>
+                    <select class="form-select" id="question-select-correct" required>
+                        <option value="">-- Select Correct Option --</option>
+                        <option value="A">Option A</option>
+                        <option value="B">Option B</option>
+                        <option value="C">Option C</option>
+                        <option value="D">Option D</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('modal-add-question')">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btn-save-question"><i class="fa-solid fa-plus"></i> ADD QUESTION</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // API Base URL (relative path for same-origin Spring Boot deployment)
+        const API_BASE = '';
+
+        // Application State
+        let currentStudent = null;
+        let quizzesList = [];
+        let studentAttemptsList = [];
+        let allQuestionsList = [];
+        let allReportsData = null;
+
+        // Current Quiz Attempt State
+        let activeQuiz = null;
+        let activeAttempt = null;
+        let activeQuestions = [];
+        let activeQuestionIndex = 0;
+        let studentAnswers = {}; // questionId -> "A"|"B"|"C"|"D"
+        let timerInterval = null;
+        let timeRemainingSeconds = 0;
+        let selectedQuizForModal = null;
+        let lastSubmittedAttempt = null;
+
+        // INIT ON LOAD
+        window.addEventListener('DOMContentLoaded', () => {
+            loadStudentProfileFromStorage();
+            refreshAllData();
+        });
+
+        // VIEW ROUTING
+        function switchView(viewName) {
+            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+
+            const targetSection = document.getElementById(`view-${viewName}`);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+
+            const navBtn = document.getElementById(`nav-${viewName}`);
+            if (navBtn) {
+                navBtn.classList.add('active');
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            if (viewName === 'home') {
+                refreshAllData();
+            } else if (viewName === 'quizzes') {
+                loadQuizzesAndAttempts();
+            } else if (viewName === 'admin') {
+                loadAdminData();
+            }
+        }
+
+        function switchAdminTab(tabName) {
+            ['quizzes', 'questions', 'students', 'reports'].forEach(t => {
+                const el = document.getElementById(`admin-tab-${t}`);
+                if (el) el.style.display = (t === tabName) ? 'block' : 'none';
+            });
+            document.querySelectorAll('.tabs-header .tab-btn').forEach((btn, idx) => {
+                btn.classList.toggle('active', ['quizzes', 'questions', 'students', 'reports'][idx] === tabName);
+            });
+
+            if (tabName === 'quizzes') loadAdminQuizzes();
+            else if (tabName === 'questions') loadAdminQuestions();
+            else if (tabName === 'students') loadAdminStudents();
+            else if (tabName === 'reports') loadAdminReports();
+        }
+
+        // TOAST NOTIFICATIONS
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+
+            let icon = 'fa-circle-info';
+            if (type === 'success') icon = 'fa-circle-check';
+            if (type === 'error') icon = 'fa-circle-exclamation';
+            if (type === 'warning') icon = 'fa-triangle-exclamation';
+
+            toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // MODAL HELPERS
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // ================= STUDENT PROFILE MANAGEMENT =================
+        function loadStudentProfileFromStorage() {
+            const saved = localStorage.getItem('quizwiz_student');
+            if (saved) {
+                try {
+                    currentStudent = JSON.parse(saved);
+                    updateStudentUI();
+                } catch (e) {
+                    console.error("Error reading saved student profile", e);
+                }
+            } else {
+                updateStudentUI();
+            }
+        }
+
+        function updateStudentUI() {
+            if (currentStudent && currentStudent.id) {
+                document.getElementById('nav-user-initial').textContent = (currentStudent.name || 'S')[0].toUpperCase();
+                document.getElementById('nav-user-name').textContent = currentStudent.name;
+                document.getElementById('student-badge-initial').textContent = (currentStudent.name || 'S')[0].toUpperCase();
+                document.getElementById('student-display-name').textContent = currentStudent.name;
+                document.getElementById('student-display-email').innerHTML = `<i class="fa-regular fa-envelope"></i> ${currentStudent.email}`;
+                document.getElementById('student-display-class').innerHTML = `<i class="fa-solid fa-graduation-cap"></i> ${currentStudent.className || 'General'}`;
+
+                // Populate form inputs
+                document.getElementById('profile-input-name').value = currentStudent.name;
+                document.getElementById('profile-input-email').value = currentStudent.email;
+                document.getElementById('profile-input-class').value = currentStudent.className || '';
+            } else {
+                document.getElementById('nav-user-initial').textContent = '?';
+                document.getElementById('nav-user-name').textContent = 'Set Profile';
+                document.getElementById('student-badge-initial').textContent = '?';
+                document.getElementById('student-display-name').textContent = 'Guest Student';
+                document.getElementById('student-display-email').innerHTML = `<i class="fa-regular fa-envelope"></i> guest@college.edu`;
+                document.getElementById('student-display-class').innerHTML = `<i class="fa-solid fa-graduation-cap"></i> Click "Save / Use Profile"`;
+            }
+        }
+
+        function openProfileModal() {
+            if (currentStudent) {
+                document.getElementById('profile-input-name').value = currentStudent.name || '';
+                document.getElementById('profile-input-email').value = currentStudent.email || '';
+                document.getElementById('profile-input-class').value = currentStudent.className || '';
+            }
+            openModal('modal-profile');
+        }
+
+        async function handleSaveProfile(e) {
+            e.preventDefault();
+            const name = document.getElementById('profile-input-name').value.trim();
+            const email = document.getElementById('profile-input-email').value.trim();
+            const className = document.getElementById('profile-input-class').value.trim();
+
+            if (!name || !email || !className) {
+                showToast("All fields are required.", "error");
+                return;
+            }
+
+            try {
+                // Check if student with this email exists first
+                const checkRes = await fetch(`${API_BASE}/api/students?email=${encodeURIComponent(email)}`);
+                const existing = await checkRes.json();
+
+                if (existing && existing.length > 0) {
+                    currentStudent = existing[0];
+                    showToast(`Welcome back, ${currentStudent.name}!`, "success");
+                } else {
+                    // Create new student record
+                    const res = await fetch(`${API_BASE}/api/students`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name, email, className })
+                    });
+                    const data = await res.json();
+                    if (!res.ok) {
+                        throw new Error(data.message || 'Could not save profile');
+                    }
+                    currentStudent = data;
+                    showToast("Profile registered successfully!", "success");
+                }
+
+                localStorage.setItem('quizwiz_student', JSON.stringify(currentStudent));
+                updateStudentUI();
+                closeModal('modal-profile');
+                loadQuizzesAndAttempts();
+            } catch (err) {
+                showToast(err.message, "error");
+            }
+        }
+
+        // ================= DATA FETCHING =================
+        async function refreshAllData() {
+            try {
+                const [qRes, repRes] = await Promise.all([
+                    fetch(`${API_BASE}/api/quizzes`),
+                    fetch(`${API_BASE}/api/reports`)
+                ]);
+
+                if (qRes.ok) {
+                    quizzesList = await qRes.json();
+                    document.getElementById('home-total-quizzes').textContent = quizzesList.length;
+                }
+
+                if (repRes.ok) {
+                    allReportsData = await repRes.json();
+                    document.getElementById('home-total-students').textContent = allReportsData.totalStudents || 0;
+                    document.getElementById('home-total-attempts').textContent = allReportsData.totalAttempts || 0;
+
+                    let totalQuestions = 0;
+                    quizzesList.forEach(q => totalQuestions += (q.questionCount || (q.questions ? q.questions.length : 0)));
+                    document.getElementById('home-total-questions').textContent = totalQuestions;
+                }
+            } catch (err) {
+                console.error("Error refreshing home stats", err);
+            }
+        }
+
+        async function loadQuizzesAndAttempts() {
+            try {
+                // Fetch quizzes
+                const res = await fetch(`${API_BASE}/api/quizzes`);
+                quizzesList = await res.json();
+
+                // If student logged in, fetch their attempts
+                if (currentStudent && currentStudent.id) {
+                    const attRes = await fetch(`${API_BASE}/api/attempts/student/${currentStudent.id}`);
+                    if (attRes.ok) {
+                        studentAttemptsList = await attRes.json();
+                    } else {
+                        studentAttemptsList = [];
+                    }
+                } else {
+                    studentAttemptsList = [];
+                }
+
+                renderStudentDashboardStats();
+                renderQuizzesGrid();
+                renderStudentAttemptsTable();
+            } catch (err) {
+                console.error("Error loading quizzes and attempts", err);
+            }
+        }
+
+        function renderStudentDashboardStats() {
+            document.getElementById('student-stat-available').textContent = quizzesList.length;
+            const completed = studentAttemptsList.filter(a => a.status === 'SUBMITTED' || a.status === 'AUTO_SUBMITTED');
+            document.getElementById('student-stat-completed').textContent = completed.length;
+            document.getElementById('student-stat-total-attempts').textContent = studentAttemptsList.length;
+
+            if (completed.length > 0) {
+                const totalPct = completed.reduce((acc, cur) => acc + (cur.percentage || 0), 0);
+                const avg = (totalPct / completed.length).toFixed(1);
+                document.getElementById('student-stat-avg').textContent = `${avg}%`;
+            } else {
+                document.getElementById('student-stat-avg').textContent = '0%';
+            }
+        }
+
+        function renderQuizzesGrid() {
+            const container = document.getElementById('quizzes-list-container');
+            container.innerHTML = '';
+
+            if (!quizzesList || quizzesList.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <i class="fa-solid fa-folder-open empty-icon"></i>
+                        <h4 class="empty-title">No quizzes are available at the moment.</h4>
+                        <p>Faculty members have not posted any quizzes yet. Please check back later.</p>
+                    </div>`;
+                return;
+            }
+
+            const attemptedQuizIds = new Set(studentAttemptsList.map(a => a.quiz ? a.quiz.id : a.quizId));
+
+            quizzesList.forEach(quiz => {
+                const isAttempted = attemptedQuizIds.has(quiz.id);
+                const qCount = quiz.questionCount != null ? quiz.questionCount : (quiz.questions ? quiz.questions.length : 0);
+
+                const card = document.createElement('div');
+                card.className = 'quiz-card';
+                card.innerHTML = `
+                    <div>
+                        <div class="quiz-card-header">
+                            <h3 class="quiz-title">${escapeHtml(quiz.title)}</h3>
+                            <span class="category-badge">${escapeHtml(quiz.category)}</span>
+                        </div>
+                        <p class="quiz-desc">${escapeHtml(quiz.description || 'No description provided.')}</p>
+                    </div>
+                    <div>
+                        <div class="quiz-meta-row">
+                            <span class="quiz-meta-item"><i class="fa-solid fa-list-ol"></i> ${qCount} Questions</span>
+                            <span class="quiz-meta-item"><i class="fa-regular fa-clock"></i> ${quiz.durationMinutes} mins</span>
+                        </div>
+                        ${isAttempted ? `
+                            <button class="btn btn-secondary badge-attempted" style="width: 100%;" disabled>
+                                <i class="fa-solid fa-check"></i> ALREADY ATTEMPTED
+                            </button>
+                        ` : `
+                            <button class="btn btn-primary" style="width: 100%;" onclick="openQuizInstructions(${quiz.id})">
+                                <i class="fa-solid fa-play"></i> START QUIZ
+                            </button>
+                        `}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderStudentAttemptsTable() {
+            const tbody = document.getElementById('student-attempts-tbody');
+            tbody.innerHTML = '';
+
+            if (!studentAttemptsList || studentAttemptsList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 2rem; color: var(--gray-500);">No quiz attempts recorded yet.</td></tr>`;
+                return;
+            }
+
+            studentAttemptsList.forEach(a => {
+                const quizTitle = a.quiz ? a.quiz.title : (a.quizTitle || 'Quiz #' + a.quizId);
+                const score = `${a.score || 0} / ${a.totalQuestions || 0}`;
+                const pct = `${a.percentage || 0}%`;
+                const date = a.submitTime || a.startTime || 'N/A';
+                const statusBadge = a.status === 'AUTO_SUBMITTED' ?
+                    `<span class="status-pill incorrect" style="background:#fee2e2; color:#b91c1c;">AUTO SUBMITTED</span>` :
+                    `<span class="status-pill correct">SUBMITTED</span>`;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${escapeHtml(quizTitle)}</strong></td>
+                    <td><strong>${score}</strong></td>
+                    <td>${pct}</td>
+                    <td>${date}</td>
+                    <td>${statusBadge}</td>
+                    <td>
+                        <button class="btn btn-secondary btn-sm" onclick="viewAttemptResult(${a.id})">
+                            <i class="fa-solid fa-eye"></i> View Result
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // ================= QUIZ INSTRUCTIONS & START =================
+        function openQuizInstructions(quizId) {
+            if (!currentStudent || !currentStudent.id) {
+                showToast("Please save/select your student profile before starting a quiz.", "warning");
+                openProfileModal();
+                return;
+            }
+
+            selectedQuizForModal = quizzesList.find(q => q.id === quizId);
+            if (!selectedQuizForModal) return;
+
+            document.getElementById('instr-quiz-title').textContent = selectedQuizForModal.title;
+            document.getElementById('instr-quiz-category').innerHTML = `<i class="fa-solid fa-tag"></i> ${escapeHtml(selectedQuizForModal.category)}`;
+            const qCount = selectedQuizForModal.questionCount != null ? selectedQuizForModal.questionCount : (selectedQuizForModal.questions ? selectedQuizForModal.questions.length : 0);
+            document.getElementById('instr-quiz-questions').innerHTML = `<i class="fa-solid fa-list-ol"></i> ${qCount} Questions`;
+            document.getElementById('instr-quiz-duration').innerHTML = `<i class="fa-solid fa-clock"></i> ${selectedQuizForModal.durationMinutes} Minutes`;
+            document.getElementById('instr-student-info').textContent = `${currentStudent.name} (${currentStudent.email})`;
+
+            openModal('modal-instructions');
+        }
+
+        async function startConfirmedAttempt() {
+            closeModal('modal-instructions');
+            if (!selectedQuizForModal || !currentStudent) return;
+
+            try {
+                // Call backend start endpoint
+                const res = await fetch(`${API_BASE}/api/attempts/start`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        studentId: currentStudent.id,
+                        quizId: selectedQuizForModal.id
+                    })
+                });
+
+                const data = await res.json();
+                if (!res.ok) {
+                    throw new Error(data.message || 'Could not start quiz');
+                }
+
+                activeAttempt = data;
+                activeQuiz = selectedQuizForModal;
+
+                // Load quiz questions
+                const qRes = await fetch(`${API_BASE}/api/quizzes/${activeQuiz.id}/questions`);
+                if (!qRes.ok) {
+                    throw new Error('Could not load quiz questions.');
+                }
+                activeQuestions = await qRes.json();
+
+                if (!activeQuestions || activeQuestions.length === 0) {
+                    throw new Error('This quiz has no questions available.');
+                }
+
+                // Initialize exam session
+                studentAnswers = {};
+                activeQuestionIndex = 0;
+                timeRemainingSeconds = activeQuiz.durationMinutes * 60;
+
+                launchExamInterface();
+            } catch (err) {
+                showToast(err.message, "error");
+            }
+        }
+
+        // ================= EXAM SESSION CONTROLS =================
+        function launchExamInterface() {
+            switchView('exam');
+
+            document.getElementById('exam-quiz-title').textContent = activeQuiz.title;
+            document.getElementById('exam-category').textContent = activeQuiz.category;
+
+            renderPalette();
+            renderActiveQuestion();
+            startTimer();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            updateTimerDisplay();
+
+            timerInterval = setInterval(() => {
+                timeRemainingSeconds--;
+                updateTimerDisplay();
+
+                if (timeRemainingSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    autoSubmitQuiz();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(Math.max(0, timeRemainingSeconds) / 60);
+            const seconds = Math.max(0, timeRemainingSeconds) % 60;
+            const text = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            document.getElementById('exam-timer-text').textContent = text;
+
+            const timerEl = document.getElementById('exam-timer');
+            timerEl.classList.remove('timer-warning', 'timer-critical');
+
+            if (timeRemainingSeconds <= 60) {
+                timerEl.classList.add('timer-critical');
+            } else if (timeRemainingSeconds <= 300) {
+                timerEl.classList.add('timer-warning');
+            }
+        }
+
+        function renderPalette() {
+            const container = document.getElementById('exam-palette');
+            container.innerHTML = '';
+
+            activeQuestions.forEach((q, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'palette-btn';
+                if (idx === activeQuestionIndex) btn.classList.add('current');
+                if (studentAnswers[q.id]) btn.classList.add('answered');
+                btn.textContent = idx + 1;
+                btn.onclick = () => jumpToQuestion(idx);
+                container.appendChild(btn);
+            });
+
+            // Update Progress Bar
+            const answeredCount = Object.keys(studentAnswers).filter(k => !!studentAnswers[k]).length;
+            const pct = (answeredCount / activeQuestions.length) * 100;
+            document.getElementById('exam-progress-bar').style.width = `${pct}%`;
+        }
+
+        function renderActiveQuestion() {
+            if (!activeQuestions || activeQuestions.length === 0) return;
+
+            const currentQ = activeQuestions[activeQuestionIndex];
+            document.getElementById('exam-question-counter').textContent = `Question ${activeQuestionIndex + 1} of ${activeQuestions.length}`;
+            document.getElementById('exam-question-text').textContent = currentQ.questionText;
+
+            const optionsContainer = document.getElementById('exam-options-list');
+            optionsContainer.innerHTML = '';
+
+            const options = [
+                { key: 'A', text: currentQ.optionA },
+                { key: 'B', text: currentQ.optionB },
+                { key: 'C', text: currentQ.optionC },
+                { key: 'D', text: currentQ.optionD }
+            ];
+
+            const selected = studentAnswers[currentQ.id];
+
+            options.forEach(opt => {
+                const div = document.createElement('div');
+                div.className = `option-item ${selected === opt.key ? 'selected' : ''}`;
+                div.onclick = () => selectOption(currentQ.id, opt.key);
+                div.innerHTML = `
+                    <div class="option-marker">${opt.key}</div>
+                    <div class="option-label">${escapeHtml(opt.text)}</div>
+                `;
+                optionsContainer.appendChild(div);
+            });
+
+            // Toggle prev/next button states
+            document.getElementById('btn-prev-question').disabled = (activeQuestionIndex === 0);
+            const isLast = (activeQuestionIndex === activeQuestions.length - 1);
+            document.getElementById('btn-next-question').innerHTML = isLast ?
+                `Next <i class="fa-solid fa-arrow-right"></i>` :
+                `Next <i class="fa-solid fa-arrow-right"></i>`;
+
+            renderPalette();
+        }
+
+        function selectOption(questionId, optionKey) {
+            studentAnswers[questionId] = optionKey;
+            renderActiveQuestion();
+        }
+
+        function clearCurrentSelection() {
+            const currentQ = activeQuestions[activeQuestionIndex];
+            delete studentAnswers[currentQ.id];
+            renderActiveQuestion();
+        }
+
+        function prevQuestion() {
+            if (activeQuestionIndex > 0) {
+                activeQuestionIndex--;
+                renderActiveQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (activeQuestionIndex < activeQuestions.length - 1) {
+                activeQuestionIndex++;
+                renderActiveQuestion();
+            }
+        }
+
+        function jumpToQuestion(idx) {
+            activeQuestionIndex = idx;
+            renderActiveQuestion();
+        }
+
+        // ================= SUBMITTING ATTEMPT =================
+        function confirmSubmitQuiz() {
+            const answeredCount = Object.keys(studentAnswers).filter(k => !!studentAnswers[k]).length;
+            document.getElementById('submit-summary-text').textContent =
+                `You have answered ${answeredCount} of ${activeQuestions.length} questions.`;
+            openModal('modal-confirm-submit');
+        }
+
+        async function autoSubmitQuiz() {
+            showToast("Time expired! Your quiz is being automatically submitted...", "warning");
+            await executeSubmit(true);
+        }
+
+        async function executeSubmit(isAutoSubmit) {
+            clearInterval(timerInterval);
+            closeModal('modal-confirm-submit');
+
+            try {
+                const payload = {
+                    answers: studentAnswers,
+                    autoSubmitted: isAutoSubmit
+                };
+
+                const res = await fetch(`${API_BASE}/api/attempts/${activeAttempt.id}/submit`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+                if (!res.ok) {
+                    throw new Error(data.message || 'Error submitting attempt.');
+                }
+
+                lastSubmittedAttempt = data;
+                displayResult(data, isAutoSubmit);
+            } catch (err) {
+                showToast(err.message, "error");
+            }
+        }
+
+        // ================= RESULT DISPLAY =================
+        function displayResult(attempt, isAutoSubmit) {
+            switchView('result');
+
+            if (isAutoSubmit || attempt.status === 'AUTO_SUBMITTED') {
+                document.getElementById('result-heading').textContent = "TIME EXPIRED!";
+                document.getElementById('result-status-msg').textContent = "Time expired – your quiz was automatically submitted.";
+                document.getElementById('result-status-msg').style.color = "var(--danger)";
+            } else {
+                document.getElementById('result-heading').textContent = "QUIZ COMPLETED!";
+                document.getElementById('result-status-msg').textContent = "Submitted Successfully";
+                document.getElementById('result-status-msg').style.color = "var(--success)";
+            }
+
+            const total = attempt.totalQuestions || 0;
+            const score = attempt.score || 0;
+            document.getElementById('result-score-text').textContent = `${score} / ${total}`;
+            document.getElementById('result-pct-text').textContent = `Percentage: ${attempt.percentage || 0}%`;
+
+            document.getElementById('res-stat-correct').textContent = attempt.correctAnswers || 0;
+            document.getElementById('res-stat-incorrect').textContent = attempt.incorrectAnswers || 0;
+            document.getElementById('res-stat-unanswered').textContent = attempt.unanswered || 0;
+
+            loadQuizzesAndAttempts();
+        }
+
+        async function viewAttemptResult(attemptId) {
+            try {
+                const res = await fetch(`${API_BASE}/api/attempts/${attemptId}`);
+                if (!res.ok) throw new Error('Could not fetch attempt details.');
+                const attempt = await res.json();
+                lastSubmittedAttempt = attempt;
+                displayResult(attempt, attempt.status === 'AUTO_SUBMITTED');
+            } catch (err) {
+                showToast(err.message, "error");
+            }
+        }
+
+        // ================= ANSWER REVIEW =================
+        async function openAnswerReview() {
+            if (!lastSubmittedAttempt) return;
+
+            try {
+                // Fetch complete attempt with answers
+                const res = await fetch(`${API_BASE}/api/attempts/${lastSubmittedAttempt.id}`);
+                const attempt = await res.json();
+                lastSubmittedAttempt = attempt;
+
+                switchView('review');
+                document.getElementById('review-quiz-subtitle').textContent =
+                    `${attempt.quiz ? attempt.quiz.title : 'Quiz'} • Final Score: ${attempt.score}/${attempt.totalQuestions} (${attempt.percentage}%)`;
+
+                const container = document.getElementById('review-questions-list');
+                container.innerHTML = '';
+
+                if (!attempt.answers || attempt.answers.length === 0) {
+                    container.innerHTML = `<div class="empty-state">No question details available for this attempt.</div>`;
+                    return;
+                }
+
+                attempt.answers.forEach((ans, idx) => {
+                    const q = ans.question;
+                    const selected = ans.selectedOption;
+                    const correct = q.correctOption;
+                    const isCorrect = ans.correct;
+                    const isUnanswered = (!selected || selected.trim() === '');
+
+                    let statusClass = 'correct';
+                    let statusLabel = 'Correct';
+                    if (isUnanswered) {
+                        statusClass = 'unanswered';
+                        statusLabel = 'Unanswered';
+                    } else if (!isCorrect) {
+                        statusClass = 'incorrect';
+                        statusLabel = 'Incorrect';
+                    }
+
+                    const card = document.createElement('div');
+                    card.className = 'review-card';
+
+                    const renderOption = (key, text) => {
+                        let optClass = 'review-option';
+                        let tag = '';
+                        if (key === correct) {
+                            optClass += ' is-correct-target';
+                            tag = `<span style="color:var(--success); font-weight:700;"><i class="fa-solid fa-check"></i> Correct Answer</span>`;
+                        } else if (key === selected && !isCorrect) {
+                            optClass += ' is-user-selected-wrong';
+                            tag = `<span style="color:var(--danger); font-weight:700;"><i class="fa-solid fa-xmark"></i> Your Answer</span>`;
+                        } else if (key === selected && isCorrect) {
+                            tag = `<span style="color:var(--success); font-weight:700;"><i class="fa-solid fa-check-double"></i> Your Answer</span>`;
+                        }
+                        return `
+                            <div class="${optClass}">
+                                <span><strong>${key}.</strong> ${escapeHtml(text)}</span>
+                                ${tag}
+                            </div>
+                        `;
+                    };
+
+                    card.innerHTML = `
+                        <div class="review-header">
+                            <span class="question-number-tag">Question ${idx + 1}</span>
+                            <span class="status-pill ${statusClass}">${statusLabel}</span>
+                        </div>
+                        <h4 style="font-size: 1.15rem; font-weight: 700; color: var(--dark); margin-bottom: 1rem;">
+                            ${escapeHtml(q.questionText)}
+                        </h4>
+                        <div>
+                            ${renderOption('A', q.optionA)}
+                            ${renderOption('B', q.optionB)}
+                            ${renderOption('C', q.optionC)}
+                            ${renderOption('D', q.optionD)}
+                        </div>
+                        <div style="margin-top: 0.85rem; font-size: 0.85rem; color: var(--gray-600); display: flex; gap: 1.5rem;">
+                            <span><strong>Your Answer:</strong> ${selected ? selected : '<em>None</em>'}</span>
+                            <span><strong>Correct Answer:</strong> Option ${correct}</span>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+
+            } catch (err) {
+                showToast(err.message, "error");
+            }
+        }
+
+        // ================= ADMIN PORTAL =================
+        async function loadAdminData() {
+            await Promise.all([
+                loadAdminQuizzes(),
+                loadAdminQuestions(),
+                loadAdminStudents(),
+                loadAdminReports()
+            ]);
+        }
+
+        async function loadAdminQuizzes() {
+            try {
+                const res = await fetch(`${API_BASE}/api/quizzes`);
+                quizzesList = await res.json();
+                document.getElementById('admin-stat-quizzes').textContent = quizzesList.length;
+
+                const tbody = document.getElementById('admin-quizzes-tbody');
+                tbody.innerHTML = '';
+
+                // Also populate quiz select dropdown in Add Question modal & filter
+                const quizSelect = document.getElementById('question-select-quiz');
+                const filterSelect = document.getElementById('admin-filter-quiz');
+                quizSelect.innerHTML = '<option value="">-- Choose Quiz --</option>';
+                filterSelect.innerHTML = '<option value="">All Quizzes</option>';
+
+                quizzesList.forEach(q => {
+                    quizSelect.innerHTML += `<option value="${q.id}">${escapeHtml(q.title)}</option>`;
+                    filterSelect.innerHTML += `<option value="${q.id}">${escapeHtml(q.title)}</option>`;
+
+                    const count = q.questionCount != null ? q.questionCount : (q.questions ? q.questions.length : 0);
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>#${q.id}</td>
+                        <td><strong>${escapeHtml(q.title)}</strong></td>
+                        <td><span class="category-badge">${escapeHtml(q.category)}</span></td>
+                        <td>${count} questions</td>
+                        <td>${q.durationMinutes} mins</td>
+                        <td>
+                            <div style="display:flex; gap:0.4rem;">
+                                <button class="btn btn-secondary btn-sm" onclick="openAddQuestionForQuiz(${q.id})"><i class="fa-solid fa-plus"></i> Question</button>
+                                <button class="btn btn-secondary btn-sm" onclick="openEditQuizModal(${q.id})"><i class="fa-solid fa-pen"></i></button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteQuiz(${q.id})"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (err) {
+                console.error("Error loading admin quizzes", err);
+            }
+        }
+
+        function openCreateQuizModal() {
+            document.getElementById('create-quiz-form').reset();
+            document.getElementById('quiz-form-id').value = '';
+            document.getElementById('quiz-modal-title').innerHTML = '<i class="fa-solid fa-plus-circle"></i> Create New Quiz';
+            openModal('modal-create-quiz');
+        }
+
+        function openEditQuizModal(quizId) {
+            const quiz = quizzesList.find(q => q.id === quizId);
+            if (!quiz) return;
+
+            document.getElementById('quiz-form-id').value = quiz.id;
+            document.getElementById('quiz-input-title').value = quiz.title;
+            document.getElementById('quiz-input-desc').value = quiz.description || '';
+            document.getElementById('quiz-input-category').value = quiz.category;
+            document.getElementById('quiz-input-duration').value = quiz.durationMinutes;
+
+            document.getElementById('quiz-modal-title').innerHTML = '<i class="fa-solid fa-pen"></i> Edit Quiz';
+            openModal('modal-create-quiz');
+        }
+
+        async function handleSaveQuiz(e) {
+            e.preventDefault();
+            const id = document.getElementById('quiz-form-id').value;
+            const title = document.getElementById('quiz-input-title').value.trim();
+            const description = document.getElementById('quiz-input-desc').value.trim();
+            const category = document.getElementById('quiz-input-category').value.trim();
+            const durationMinutes = parseInt(document.getElementById('quiz-input-duration').value, 10);
+
+            const payload = { title, description, category, durationMinutes };
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? `${API_BASE}/api/quizzes/${id}` : `${API_BASE}/api/quizzes`;
+
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || 'Error saving quiz');
+
+                showToast(id ? 'Quiz updated successfully!' : 'Quiz created successfully!', 'success');
+                closeModal('modal-create-quiz');
+                loadAdminQuizzes();
+                refreshAllData();
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        }
+
+        async function deleteQuiz(id) {
+            if (!confirm(`Are you sure you want to delete Quiz #${id}? All its questions and attempts will also be removed.`)) return;
+
+            try {
+                const res = await fetch(`${API_BASE}/api/quizzes/${id}`, { method: 'DELETE' });
+                if (!res.ok) throw new Error('Could not delete quiz');
+
+                showToast('Quiz deleted successfully.', 'success');
+                loadAdminQuizzes();
+                refreshAllData();
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        }
+
+        // ================= ADMIN QUESTIONS =================
+        async function loadAdminQuestions() {
+            try {
+                const selectedQuizId = document.getElementById('admin-filter-quiz').value;
+                const url = selectedQuizId ? `${API_BASE}/api/quizzes/${selectedQuizId}/questions` : `${API_BASE}/api/questions`;
+
+                const res = await fetch(url);
+                allQuestionsList = await res.json();
+                document.getElementById('admin-stat-questions').textContent = allQuestionsList.length;
+
+                const tbody = document.getElementById('admin-questions-tbody');
+                tbody.innerHTML = '';
+
+                if (allQuestionsList.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 2rem; color: var(--gray-500);">No questions found.</td></tr>`;
+                    return;
+                }
+
+                allQuestionsList.forEach(q => {
+                    const quizTitle = q.quiz ? q.quiz.title : `Quiz #${q.quizId}`;
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>#${q.id}</td>
+                        <td style="max-width:300px;"><strong>${escapeHtml(q.questionText)}</strong></td>
+                        <td style="font-size:0.85rem; color: var(--gray-600);">
+                            A: ${escapeHtml(q.optionA)}<br>
+                            B: ${escapeHtml(q.optionB)}<br>
+                            C: ${escapeHtml(q.optionC)}<br>
+                            D: ${escapeHtml(q.optionD)}
+                        </td>
+                        <td><span class="status-pill correct" style="font-weight:800;">${q.correctOption}</span></td>
+                        <td>${escapeHtml(quizTitle)}</td>
+                        <td>
+                            <div style="display:flex; gap:0.4rem;">
+                                <button class="btn btn-secondary btn-sm" onclick="openEditQuestionModal(${q.id})"><i class="fa-solid fa-pen"></i></button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteQuestion(${q.id})"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (err) {
+                console.error("Error loading questions", err);
+            }
+        }
+
+        function openAddQuestionModal() {
+            document.getElementById('create-question-form').reset();
+            document.getElementById('question-form-id').value = '';
+            document.getElementById('question-modal-title').innerHTML = '<i class="fa-solid fa-circle-question"></i> Add Question';
+            openModal('modal-add-question');
+        }
+
+        function openAddQuestionForQuiz(quizId) {
+            openAddQuestionModal();
+            document.getElementById('question-select-quiz').value = quizId;
+        }
+
+        function openEditQuestionModal(questionId) {
+            const q = allQuestionsList.find(x => x.id === questionId);
+            if (!q) return;
+
+            document.getElementById('question-form-id').value = q.id;
+            document.getElementById('question-select-quiz').value = q.quizId || (q.quiz ? q.quiz.id : '');
+            document.getElementById('question-input-text').value = q.questionText;
+            document.getElementById('question-input-optA').value = q.optionA;
+            document.getElementById('question-input-optB').value = q.optionB;
+            document.getElementById('question-input-optC').value = q.optionC;
+            document.getElementById('question-input-optD').value = q.optionD;
+            document.getElementById('question-select-correct').value = q.correctOption;
+
+            document.getElementById('question-modal-title').innerHTML = '<i class="fa-solid fa-pen"></i> Edit Question';
+            openModal('modal-add-question');
+        }
+
+        async function handleSaveQuestion(e) {
+            e.preventDefault();
+            const id = document.getElementById('question-form-id').value;
+            const quizId = parseInt(document.getElementById('question-select-quiz').value, 10);
+            const questionText = document.getElementById('question-input-text').value.trim();
+            const optionA = document.getElementById('question-input-optA').value.trim();
+            const optionB = document.getElementById('question-input-optB').value.trim();
+            const optionC = document.getElementById('question-input-optC').value.trim();
+            const optionD = document.getElementById('question-input-optD').value.trim();
+            const correctOption = document.getElementById('question-select-correct').value;
+
+            const payload = { quizId, questionText, optionA, optionB, optionC, optionD, correctOption };
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? `${API_BASE}/api/questions/${id}` : `${API_BASE}/api/questions`;
+
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || 'Error saving question');
+
+                showToast(id ? 'Question updated successfully!' : 'Question added successfully!', 'success');
+                closeModal('modal-add-question');
+                loadAdminQuestions();
+                loadAdminQuizzes();
+                refreshAllData();
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        }
+
+        async function deleteQuestion(id) {
+            if (!confirm(`Delete question #${id}?`)) return;
+            try {
+                const res = await fetch(`${API_BASE}/api/questions/${id}`, { method: 'DELETE' });
+                if (!res.ok) throw new Error('Could not delete question');
+                showToast('Question deleted.', 'success');
+                loadAdminQuestions();
+                loadAdminQuizzes();
+                refreshAllData();
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        }
+
+        // ================= ADMIN STUDENTS =================
+        async function loadAdminStudents() {
+            try {
+                const res = await fetch(`${API_BASE}/api/students`);
+                const students = await res.json();
+                document.getElementById('admin-stat-students').textContent = students.length;
+
+                const tbody = document.getElementById('admin-students-tbody');
+                tbody.innerHTML = '';
+
+                if (students.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 2rem; color: var(--gray-500);">No registered students yet.</td></tr>`;
+                    return;
+                }
+
+                students.forEach(s => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>#${s.id}</td>
+                        <td><strong>${escapeHtml(s.name)}</strong></td>
+                        <td>${escapeHtml(s.email)}</td>
+                        <td><span class="category-badge">${escapeHtml(s.className || 'N/A')}</span></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (err) {
+                console.error("Error loading students", err);
+            }
+        }
+
+        // ================= ADMIN REPORTS =================
+        async function loadAdminReports() {
+            try {
+                const res = await fetch(`${API_BASE}/api/reports`);
+                allReportsData = await res.json();
+
+                document.getElementById('admin-stat-attempts').textContent = allReportsData.totalAttempts || 0;
+                document.getElementById('rep-total-attempts').textContent = allReportsData.totalAttempts || 0;
+                document.getElementById('rep-avg-score').textContent = (allReportsData.averageScore || 0);
+                document.getElementById('rep-high-score').textContent = (allReportsData.highestScore || 0);
+                document.getElementById('rep-low-score').textContent = (allReportsData.lowestScore || 0);
+
+                // Populate category filter in reports
+                const catFilter = document.getElementById('reports-filter-category');
+                const categories = new Set();
+                (allReportsData.attempts || []).forEach(a => { if (a.category) categories.add(a.category); });
+                catFilter.innerHTML = '<option value="">All Categories</option>';
+                categories.forEach(c => catFilter.innerHTML += `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`);
+
+                filterReportsTable();
+            } catch (err) {
+                console.error("Error loading reports", err);
+            }
+        }
+
+        function filterReportsTable() {
+            if (!allReportsData || !allReportsData.attempts) return;
+
+            const search = document.getElementById('reports-search').value.toLowerCase().trim();
+            const cat = document.getElementById('reports-filter-category').value;
+            const status = document.getElementById('reports-filter-status').value;
+
+            const filtered = allReportsData.attempts.filter(a => {
+                const sName = (a.studentName || '').toLowerCase();
+                const sEmail = (a.studentEmail || '').toLowerCase();
+                const qTitle = (a.quizTitle || '').toLowerCase();
+
+                const matchSearch = !search || sName.includes(search) || sEmail.includes(search) || qTitle.includes(search);
+                const matchCat = !cat || a.category === cat;
+                const matchStatus = !status || a.status === status;
+
+                return matchSearch && matchCat && matchStatus;
+            });
+
+            const tbody = document.getElementById('admin-reports-tbody');
+            tbody.innerHTML = '';
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding: 2rem; color: var(--gray-500);">No report records matching criteria.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(a => {
+                const statusBadge = a.status === 'AUTO_SUBMITTED' ?
+                    `<span class="status-pill incorrect" style="background:#fee2e2; color:#b91c1c;">AUTO_SUBMITTED</span>` :
+                    `<span class="status-pill correct">SUBMITTED</span>`;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${escapeHtml(a.studentName || 'Student')}</strong></td>
+                    <td>${escapeHtml(a.studentEmail || 'N/A')}</td>
+                    <td>${escapeHtml(a.className || 'N/A')}</td>
+                    <td>${escapeHtml(a.quizTitle || 'Quiz')}</td>
+                    <td><span class="category-badge">${escapeHtml(a.category || 'N/A')}</span></td>
+                    <td><strong>${a.score} / ${a.totalQuestions}</strong></td>
+                    <td>${a.percentage}%</td>
+                    <td style="font-size:0.85rem;">${a.submitTime || a.startTime || 'N/A'}</td>
+                    <td>${statusBadge}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // UTILITY ESCAPE
+        function escapeHtml(text) {
+            if (!text) return '';
+            return String(text)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>
